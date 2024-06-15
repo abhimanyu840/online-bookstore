@@ -41,8 +41,17 @@ export async function loginUser(email: string, password: string) {
 }
 
 function createToken(user: any) {
-    const token = jwt.sign({ id: user._id, email: user.email }, String(process.env.SECRET_KEY), {
+    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, String(process.env.SECRET_KEY), {
         expiresIn: '1h',
     });
     return { token, user: { id: user._id, email: user.email } };
+}
+
+export function decodeToken(token: string) {
+    try {
+        const decoded = jwt.verify(token, String(process.env.SECRET_KEY));
+        return decoded;
+    } catch (error) {
+        throw new Error('Invalid token');
+    }
 }

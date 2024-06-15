@@ -1,3 +1,4 @@
+'use client'
 // src/app/books/[id]/page.tsx
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
