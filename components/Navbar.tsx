@@ -11,7 +11,7 @@ const Navbar = () => {
     const [admin, setAdmin] = useState<boolean>(true);
 
     return (
-        <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 sticky backdrop:blur-md shadow-md">
+        <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 sticky backdrop:blur-md shadow-md dark:shadow-gray-800 top-0">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <div className='text-2xl font-semibold dark:text-white'><Link href={'/'}> <span className='text-green-700 font-bold text-3xl'>B</span>ook<span className='text-green-700 font-bold text-3xl'>S</span>tore </Link></div>
 
