@@ -1,7 +1,8 @@
+// components/Cart.tsx
 'use client'
-// src/components/Cart.tsx
 import React from 'react';
 import { XIcon } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface CartProps {
     cartItems: any[];
@@ -16,7 +17,7 @@ const Cart = ({ cartItems, onClose }: CartProps) => {
             <div className="w-full max-w-md h-full bg-white dark:bg-gray-900 p-6 overflow-y-auto">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-semibold dark:text-white">Shopping Cart</h2>
-                    <button onClick={onClose}>
+                    <button title='onclose' onClick={onClose}>
                         <XIcon className="w-6 h-6 dark:text-white" />
                     </button>
                 </div>
@@ -40,8 +41,7 @@ const Cart = ({ cartItems, onClose }: CartProps) => {
                         </ul>
                         <div className="mt-6 border-t pt-4">
                             <h3 className="text-lg font-semibold dark:text-white">Total: ₹{totalPrice}</h3>
-                            <button className="mt-4 w-full text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded" title='checkout'>Checkout</button>
-
+                            <Button variant={'blue'}>Checkout</Button>
                         </div>
                     </>
                 )}

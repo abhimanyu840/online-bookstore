@@ -1,18 +1,27 @@
+// components/Card.tsx
 import Image from 'next/image';
 import React from 'react';
 import { Button } from './ui/button';
 import Link from 'next/link';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { addItem } from '@/lib/store/features/cart/cartSlice';
 
 export interface CardData {
     id: string;
     title: string;
     description: string;
     image: string;
-    price: string;
+    price: number;
     author: string;
 }
 
 const Card = ({ id, title, description, image, price, author }: CardData) => {
+    const dispatch = useAppDispatch();
+
+    const handleAddToCart = () => {
+        dispatch(addItem({ id, title, description, image, price, quantity: 1 }));
+    }
+
     return (
         <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mt-6 px-10 py-6">
             <div className="relative h-56 w-full overflow-hidden rounded-t-lg">
@@ -35,10 +44,8 @@ const Card = ({ id, title, description, image, price, author }: CardData) => {
                     </span>
                 </div>
                 <div className="flex justify-between">
-
                     <Button variant={'blue'}><Link href={`/books/${id}`}>View Details</Link></Button>
-                    <Button variant={'blue'}>Add To Cart</Button>
-
+                    <Button variant={'blue'} onClick={handleAddToCart}>Add To Cart</Button>
                 </div>
             </div>
         </div>

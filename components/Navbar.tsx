@@ -1,4 +1,4 @@
-// src/components/navbar.tsx
+// components/Navbar.tsx
 'use client'
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -9,14 +9,15 @@ import { getLoginState } from '@/utils/getLoginState';
 import { getUserData } from '@/utils/getUserData';
 import { JwtPayload } from 'jsonwebtoken';
 import { deleteCookie } from 'cookies-next';
-import Cart from './Cart'; // Import Cart component
+import Cart from './Cart';
+import { useAppSelector } from '@/lib/store/hooks';
 
 const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const [admin, setAdmin] = useState<boolean>(false);
     const [token, setToken] = useState<string | null>(null);
     const [cartOpen, setCartOpen] = useState<boolean>(false);
-    const [cartItems, setCartItems] = useState<any[]>([]);
+    const cartItems = useAppSelector((state) => state.cart.items);
 
     const checkLoggedIn = async () => {
         const { token } = await getLoginState();
@@ -41,7 +42,9 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
-        checkAdmin();
+        if (token) {
+            checkAdmin();
+        }
     }, [token]);
 
     const handleLogout = () => {
@@ -53,20 +56,6 @@ const Navbar = () => {
     const handleCartToggle = () => {
         setCartOpen(!cartOpen);
     };
-
-    const addToCart = (item: any) => {
-        setCartItems((prevItems) => {
-            const itemIndex = prevItems.findIndex((cartItem) => cartItem._id === item._id);
-            if (itemIndex > -1) {
-                const updatedItems = [...prevItems];
-                updatedItems[itemIndex].quantity += 1;
-                return updatedItems;
-            } else {
-                return [...prevItems, { ...item, quantity: 1 }];
-            }
-        });
-    };
-
 
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
