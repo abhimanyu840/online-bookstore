@@ -1,5 +1,4 @@
-// lib/store/features/cart/cartSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CartItem {
     id: string;
@@ -16,7 +15,7 @@ export interface CartState {
 
 const initialState: CartState = {
     items: [],
-}
+};
 
 export const cartSlice = createSlice({
     name: 'cart',
@@ -36,10 +35,10 @@ export const cartSlice = createSlice({
         },
         clearCart: (state) => {
             state.items = [];
-        }
+        },
     },
-})
+});
 
-export const { addItem, removeItem, clearCart } = cartSlice.actions
+export const { addItem, removeItem, clearCart } = cartSlice.actions;
 
-export default cartSlice.reducer
+export default cartSlice.reducer;

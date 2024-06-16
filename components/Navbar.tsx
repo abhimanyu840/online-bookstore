@@ -57,7 +57,7 @@ const Navbar = () => {
         setCartOpen(!cartOpen);
     };
 
-    const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    const totalItems = cartItems.reduce((acc: any, item: any) => acc + item.quantity, 0);
 
     return (
         <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 sticky backdrop:blur-md shadow-md dark:shadow-gray-800 top-0 z-50">
