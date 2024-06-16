@@ -7,8 +7,8 @@ if (!MONGODB_URI) {
 }
 
 interface MongooseCache {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
+    conn: any;
+    promise: any;
 }
 
 declare global {
