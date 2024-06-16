@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { registerSchema } from '@/zod/registerSchema'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -15,9 +15,15 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Loader2 } from 'lucide-react'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
+import { setCookie } from 'cookies-next';
 
 
 const Signup = () => {
+    const [loading, setLoading] = useState<boolean>(false)
+    const router = useRouter()
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof registerSchema>>({
@@ -34,7 +40,38 @@ const Signup = () => {
     function onSubmit(values: z.infer<typeof registerSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log(values)
+        // console.log(values)
+        setLoading(true)
+        try {
+            const createUser = async () => {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values)
+                })
+                const data = await response.json()
+                console.log(data,'daat')
+                if (data.error) {
+                    toast.error(data.error)
+                    setLoading(false)
+                } else {
+                    toast.success('User created successfully')
+                    form.reset()
+                    setLoading(false)
+                    // cookies().set('token', data.t, { secure: true })
+                    // document.cookie = `token=${data.token}`
+                    setCookie('token', data.token);
+                    router.push('/')
+                }
+            }
+            createUser()
+        } catch (error) {
+            console.error(error)
+            setLoading(false)
+            toast.error('Oops! Some error occurred');
+        }
     }
 
     return (
@@ -84,7 +121,10 @@ const Signup = () => {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit" disabled={loading}>
+                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Submit
+                        </Button>
                     </form>
                 </Form>
             </div>

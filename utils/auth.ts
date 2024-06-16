@@ -42,7 +42,7 @@ export async function loginUser(email: string, password: string) {
 
 function createToken(user: any) {
     const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, String(process.env.SECRET_KEY), {
-        expiresIn: '1h',
+        expiresIn: '5d',
     });
     return { token, user: { id: user._id, email: user.email } };
 }

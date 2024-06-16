@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { z } from "zod"
 import { loginSchema } from '@/zod/loginSchema';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,8 +15,14 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
+import { setCookie } from 'cookies-next';
 
 const Login = () => {
+    const [loading, setLoading] = useState<boolean>(false)
+    const router = useRouter();
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof loginSchema>>({
@@ -32,6 +38,36 @@ const Login = () => {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         console.log(values)
+        setLoading(true);
+        try {
+            const loginUser = async () => {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values)
+                })
+                const data = await response.json()
+                if (response.ok) {
+                    // setCookie('token', data.token);
+                    document.cookie = `token=${data.token}`;
+                    setLoading(false)
+                    toast.success('Login Successful');
+                    location.reload()
+                    router.push('/')
+                } else {
+                    // login failed, show error message
+                    toast.error(data.message)
+                    setLoading(false)
+                }
+            }
+            loginUser()
+        } catch (error) {
+            console.error(error);
+            toast.error('Oops! Login Failed');
+            setLoading(false)
+        }
     }
 
     return (
@@ -68,7 +104,10 @@ const Login = () => {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">Login</Button>
+                        <Button type="submit" disabled={loading}>
+                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Login
+                        </Button>
                     </form>
                 </Form>
             </div>
