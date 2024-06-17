@@ -1,5 +1,4 @@
-// components/Navbar.tsx
-'use client'
+'use client';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
@@ -9,15 +8,16 @@ import { getLoginState } from '@/utils/getLoginState';
 import { getUserData } from '@/utils/getUserData';
 import { JwtPayload } from 'jsonwebtoken';
 import { deleteCookie } from 'cookies-next';
-import Cart from './Cart';
-import { useAppSelector } from '@/lib/store/hooks';
+import Cart from './Cart'; // Import Cart component
+import { useAppSelector } from '@/lib/store/hooks'; // Import useAppSelector
+import { RootState } from '@/lib/store/store'; // Import RootState
 
 const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const [admin, setAdmin] = useState<boolean>(false);
     const [token, setToken] = useState<string | null>(null);
     const [cartOpen, setCartOpen] = useState<boolean>(false);
-    const cartItems = useAppSelector((state) => state.cart.items);
+    const cartItems = useAppSelector((state: RootState) => state.cart.items); // Access cart items from Redux store
 
     const checkLoggedIn = async () => {
         const { token } = await getLoginState();
@@ -57,12 +57,17 @@ const Navbar = () => {
         setCartOpen(!cartOpen);
     };
 
-    const totalItems = cartItems.reduce((acc: any, item: any) => acc + item.quantity, 0);
+    const totalItems = cartItems.reduce((acc:any, item:any) => acc + item.quantity, 0);
 
     return (
         <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 sticky backdrop:blur-md shadow-md dark:shadow-gray-800 top-0 z-50">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                <div className='text-2xl font-semibold dark:text-white'><Link href={'/'}> <span className='text-green-700 font-bold text-3xl'>B</span>ook<span className='text-green-700 font-bold text-3xl'>S</span>tore </Link></div>
+                <div className='text-2xl font-semibold dark:text-white'>
+                    <Link href={'/'}>
+                        <span className='text-green-700 font-bold text-3xl'>B</span>ook
+                        <span className='text-green-700 font-bold text-3xl'>S</span>tore
+                    </Link>
+                </div>
                 <div className="hidden w-full md:block md:w-auto" id="navbar-dropdown">
                     <ul className="flex flex-col items-center font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                         <li><Link href={'/'}>Home</Link></li>
