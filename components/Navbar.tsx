@@ -1,9 +1,9 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
 import ThemeSwitch from './ThemeSwitch';
-import { BaggageClaimIcon, LogOut, User2Icon } from 'lucide-react';
+import { AlignJustify, BaggageClaimIcon, LogOut, User2Icon } from 'lucide-react';
 import { getLoginState } from '@/utils/getLoginState';
 import { getUserData } from '@/utils/getUserData';
 import { JwtPayload } from 'jsonwebtoken';
@@ -18,6 +18,7 @@ const Navbar = () => {
     const [token, setToken] = useState<string | null>(null);
     const [cartOpen, setCartOpen] = useState<boolean>(false);
     const cartItems = useAppSelector((state: RootState) => state.cart.items); // Access cart items from Redux store
+    const navRef = useRef<HTMLDivElement>(null)
 
     const checkLoggedIn = async () => {
         const { token } = await getLoginState();
@@ -57,7 +58,18 @@ const Navbar = () => {
         setCartOpen(!cartOpen);
     };
 
-    const totalItems = cartItems.reduce((acc:any, item:any) => acc + item.quantity, 0);
+    const handleToggleNav = () => {
+        if (navRef.current?.classList.contains('hidden')) {
+            navRef.current?.classList.remove('hidden')
+            navRef.current?.classList.add('flex')
+        }
+        else if (navRef.current?.classList.contains('flex')) {
+            navRef.current?.classList.remove('flex')
+            navRef.current?.classList.add('hidden')
+        }
+    }
+
+    const totalItems = cartItems.reduce((acc: any, item: any) => acc + item.quantity, 0);
 
     return (
         <nav className="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 sticky backdrop:blur-md shadow-md dark:shadow-gray-800 top-0 z-50">
@@ -68,8 +80,11 @@ const Navbar = () => {
                         <span className='text-green-700 font-bold text-3xl'>S</span>tore
                     </Link>
                 </div>
-                <div className="hidden w-full md:block md:w-auto" id="navbar-dropdown">
-                    <ul className="flex flex-col items-center font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                <div className="block md:hidden">
+                    <AlignJustify onClick={handleToggleNav} />
+                </div>
+                <div className="hidden w-full md:block md:w-auto" id="navbar-dropdown" ref={navRef}>
+                    <ul className="flex flex-col w-full md:w-auto gap-2 items-center font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                         <li><Link href={'/'}>Home</Link></li>
                         <li><Link href={'/books'}>Books</Link></li>
                         {!loggedIn ? (
