@@ -15,14 +15,15 @@ export async function POST(request: Request) {
     await dbConnect();
     const body = await request.json();
 
-    // Validate request body against Zod schema
     try {
-        OrderSchema.parse(body);
+        const res = OrderSchema.safeParse(body);
+        if (!res.success) {
+            return NextResponse.json({ error: res.error.format() }, { status: 400 });
+        }
+        const newOrder = new Order(res.data);
+        await newOrder.save();
+        return NextResponse.json(newOrder, { status: 201 });
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 400 });
     }
-
-    const newOrder = new Order(body);
-    await newOrder.save();
-    return NextResponse.json(newOrder, { status: 201 });
 }

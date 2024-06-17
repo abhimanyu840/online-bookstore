@@ -18,101 +18,86 @@ import { Input } from "@/components/ui/input"
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
-import { setCookie } from 'cookies-next';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter();
+    const { login } = useAuth(); // Get the login method from the context
 
-    // 1. Define your form.
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
             email: "",
-            password: ""
+            password: "",
         },
     })
 
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof loginSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
-        setLoading(true);
-        try {
-            const loginUser = async () => {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(values)
-                })
-                const data = await response.json()
-                if (response.ok) {
-                    // setCookie('token', data.token);
-                    document.cookie = `token=${data.token}`;
-                    setLoading(false)
-                    toast.success('Login Successful');
-                    location.reload()
-                    router.push('/')
-                } else {
-                    // login failed, show error message
-                    toast.error(data.message)
-                    setLoading(false)
-                }
-            }
-            loginUser()
-        } catch (error) {
-            console.error(error);
-            toast.error('Oops! Login Failed');
+    async function onSubmit(values: z.infer<typeof loginSchema>) {
+        setLoading(true)
+        const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+        });
+        const data = await res.json()
+        if (res.ok) {
+            toast.success("Login Success")
+            login(data.token); // Use the login method from the context
+            setLoading(false)
+            router.push("/")
+        } else {
+            toast.error("Login Failed")
             setLoading(false)
         }
     }
 
     return (
-        <div className='container'>
-            <h1 className="mt-4 font-bold text-center underline text-4xl text-green-950 dark:text-green-500">
-                Login
-            </h1>
-            <div className="form mt-4 container">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Email" type='email' {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Password" type='password' {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit" disabled={loading}>
-                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Login
-                        </Button>
-                    </form>
-                </Form>
-            </div>
+        <div className='md:w-1/2 mx-auto py-5'>
+            <h1 className='text-2xl md:text-3xl font-bold mb-5 dark:text-white'>Login</h1>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Enter Email" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    This is your email.
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Password</FormLabel>
+                                <FormControl>
+                                    <Input type='password' placeholder="Enter Password" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    This is your password.
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit" className='w-full md:w-1/2' disabled={loading}>
+                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Login"}
+                    </Button>
+                </form>
+            </Form>
         </div>
     )
 }
 
-export default Login
+export default Login;

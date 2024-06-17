@@ -18,12 +18,13 @@ import { Input } from "@/components/ui/input"
 import { Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-import { setCookie } from 'cookies-next';
+import { useAuth } from '../context/AuthContext'
 
 
 const Signup = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter()
+    const { login } = useAuth(); // Get the login method from the context
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof registerSchema>>({
@@ -52,18 +53,14 @@ const Signup = () => {
                     body: JSON.stringify(values)
                 })
                 const data = await response.json()
-                console.log(data,'daat')
-                if (data.error) {
-                    toast.error(data.error)
+                if (response.ok) {
+                    toast.success("Created Account Successfully")
+                    login(data.token); // Use the login method from the context
                     setLoading(false)
+                    router.push("/")
                 } else {
-                    toast.success('User created successfully')
-                    form.reset()
+                    toast.error("Login Failed")
                     setLoading(false)
-                    // cookies().set('token', data.t, { secure: true })
-                    // document.cookie = `token=${data.token}`
-                    setCookie('token', data.token);
-                    router.push('/')
                 }
             }
             createUser()
@@ -121,9 +118,8 @@ const Signup = () => {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" disabled={loading}>
-                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Submit
+                        <Button type="submit" className='w-full md:w-1/2' disabled={loading}>
+                            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "SignUp"}
                         </Button>
                     </form>
                 </Form>

@@ -1,18 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../utils/db';
 import Order from '../../../../models/Order';
 import { OrderSchema } from '@/zod/orderSchema';
 
-interface MyRequest extends Request {
-    params: {
-        id: string;
-    }
-}
-
 // Get order by ID
-export async function GET(request: MyRequest) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     await dbConnect();
-    const { id } = request.params;
+    const { id } = params;
     const order = await Order.findById(id).populate('user').populate('orderItems.book');
     if (!order) {
         return NextResponse.json({ error: 'Order not found' }, { status: 404 });
@@ -21,12 +15,11 @@ export async function GET(request: MyRequest) {
 }
 
 // Update order by ID
-export async function PUT(request: MyRequest) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     await dbConnect();
-    const { id } = request.params;
+    const { id } = params;
     const body = await request.json();
 
-    // Validate request body against Zod schema
     try {
         OrderSchema.partial().parse(body); // Allow partial updates
     } catch (error) {
@@ -40,13 +33,13 @@ export async function PUT(request: MyRequest) {
     return NextResponse.json(updatedOrder);
 }
 
-// Delete order by ID
-export async function DELETE(request: MyRequest) {
-    await dbConnect();
-    const { id } = request.params;
-    const deletedOrder = await Order.findByIdAndDelete(id);
-    if (!deletedOrder) {
-        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-    }
-    return NextResponse.json({ message: 'Order deleted' });
-}
+// // Delete order by ID
+// export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+//     await dbConnect();
+//     const { id } = params;
+//     const deletedOrder = await Order.findByIdAndDelete(id);
+//     if (!deletedOrder) {
+//         return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+//     }
+//     return NextResponse.json({ message: 'Order deleted' });
+// }

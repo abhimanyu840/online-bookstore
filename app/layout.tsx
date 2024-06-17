@@ -7,6 +7,8 @@ import { Providers } from "./providers";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import StoreProvider from "./StoreProvider";
+import { AuthProvider } from "./context/AuthContext";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,13 +26,15 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <NextTopLoader />
-        <StoreProvider>
-          <Providers>
-            <ToastContainer />
-            <Navbar />
-            {children}
-          </Providers>
-        </StoreProvider>
+        <AuthProvider>
+          <StoreProvider>
+            <Providers>
+              <ToastContainer />
+              <Navbar />
+              {children}
+            </Providers>
+          </StoreProvider>
+        </AuthProvider>
       </body>
     </html>
   );

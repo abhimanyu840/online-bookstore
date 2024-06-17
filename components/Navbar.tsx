@@ -1,58 +1,20 @@
 'use client';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from './ui/button';
 import ThemeSwitch from './ThemeSwitch';
 import { AlignJustify, BaggageClaimIcon, LogOut, User2Icon } from 'lucide-react';
-import { getLoginState } from '@/utils/getLoginState';
-import { getUserData } from '@/utils/getUserData';
-import { JwtPayload } from 'jsonwebtoken';
-import { deleteCookie } from 'cookies-next';
 import Cart from './Cart'; // Import Cart component
 import { useAppSelector } from '@/lib/store/hooks'; // Import useAppSelector
 import { RootState } from '@/lib/store/store'; // Import RootState
+import { useAuth } from '@/app/context/AuthContext';
+
 
 const Navbar = () => {
-    const [loggedIn, setLoggedIn] = useState<boolean>(false);
-    const [admin, setAdmin] = useState<boolean>(false);
-    const [token, setToken] = useState<string | null>(null);
+    const { loggedIn, admin, logout } = useAuth();
     const [cartOpen, setCartOpen] = useState<boolean>(false);
     const cartItems = useAppSelector((state: RootState) => state.cart.items); // Access cart items from Redux store
-    const navRef = useRef<HTMLDivElement>(null)
-
-    const checkLoggedIn = async () => {
-        const { token } = await getLoginState();
-        if (token) {
-            setLoggedIn(true);
-            setToken(token);
-        }
-    };
-
-    const checkAdmin = async () => {
-        const data = await getUserData(token!);
-        if (data) {
-            const { id, email, role } = data as JwtPayload;
-            if (role === 'admin') {
-                setAdmin(true);
-            }
-        }
-    };
-
-    useEffect(() => {
-        checkLoggedIn();
-    }, []);
-
-    useEffect(() => {
-        if (token) {
-            checkAdmin();
-        }
-    }, [token]);
-
-    const handleLogout = () => {
-        deleteCookie('token');
-        setLoggedIn(false);
-        setAdmin(false);
-    };
+    const navRef = useRef<HTMLDivElement>(null);
 
     const handleCartToggle = () => {
         setCartOpen(!cartOpen);
@@ -60,14 +22,13 @@ const Navbar = () => {
 
     const handleToggleNav = () => {
         if (navRef.current?.classList.contains('hidden')) {
-            navRef.current?.classList.remove('hidden')
-            navRef.current?.classList.add('flex')
+            navRef.current?.classList.remove('hidden');
+            navRef.current?.classList.add('flex');
+        } else if (navRef.current?.classList.contains('flex')) {
+            navRef.current?.classList.remove('flex');
+            navRef.current?.classList.add('hidden');
         }
-        else if (navRef.current?.classList.contains('flex')) {
-            navRef.current?.classList.remove('flex')
-            navRef.current?.classList.add('hidden')
-        }
-    }
+    };
 
     const totalItems = cartItems.reduce((acc: any, item: any) => acc + item.quantity, 0);
 
@@ -100,7 +61,7 @@ const Navbar = () => {
                             <>
                                 <li><Link href={'/orders'}>Orders</Link></li>
                                 <li>
-                                    <Button variant={'blue'} size={'sm'} onClick={handleLogout}><LogOut /> Logout</Button>
+                                    <Button variant={'blue'} size={'sm'} onClick={logout}><LogOut /> Logout</Button>
                                 </li>
                                 <li>
                                     <div className='p-1 border border-black dark:border-gray-500 rounded-sm shadow shadow-black dark:shadow-gray-700 dark:bg-blue-600 dark:hover:bg-blue-700 mb-1'>
