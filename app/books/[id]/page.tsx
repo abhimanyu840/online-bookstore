@@ -1,7 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-// src/app/books/[id]/page.tsx
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { addItem } from '@/lib/store/features/cart/cartSlice';
@@ -28,11 +27,10 @@ const BookDetails = ({ params }: { params: { id: string } }) => {
         }
     }, [id]);
 
-
-
-    const handleAddToCart = ({ id, title, description, image, price }: BookData) => {
-        dispatch(addItem({ id, title, description, image, price, quantity: 1 }));
+    const handleAddToCart = (book: BookData) => {
+        dispatch(addItem({ ...book, quantity: 1 }));
     }
+
 
     if (!book) return <div>Loading...</div>;
 
@@ -49,7 +47,7 @@ const BookDetails = ({ params }: { params: { id: string } }) => {
                             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 dark:border-gray-700 mb-5"></div>
                             <div className="flex">
                                 <span className="title-font font-medium text-2xl text-gray-900 dark:text-white">${book.price}</span>
-                                <Button variant={'blue'} onClick={() => handleAddToCart({ ...book })}>Add To Cart</Button>
+                                <Button variant={'blue'} onClick={() => handleAddToCart(book)}>Add To Cart</Button>
                             </div>
                         </div>
                     </div>
