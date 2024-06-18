@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import StoreProvider from "./StoreProvider";
 import { AuthProvider } from "./context/AuthContext";
+import Script from "next/script";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -35,6 +36,7 @@ export default function RootLayout({
             </Providers>
           </StoreProvider>
         </AuthProvider>
+        <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
       </body>
     </html>
   );

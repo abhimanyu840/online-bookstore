@@ -3,15 +3,26 @@ import dbConnect from '../../../../utils/db';
 import Order from '../../../../models/Order';
 import { OrderSchema } from '@/zod/orderSchema';
 
-// Get order by ID
+// // Get order by ID
+// export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+//     await dbConnect();
+//     const { id } = params;
+//     const order = await Order.find({ user: id }).populate('user', 'name email');
+//     if (!order) {
+//         return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+//     }
+//     return NextResponse.json(order);
+// }
+
+// Get orders by user ID
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     await dbConnect();
     const { id } = params;
-    const order = await Order.findById(id).populate('user').populate('orderItems.book');
-    if (!order) {
-        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    const orders = await Order.find({ user: id }).populate('user', 'name email').populate('orderItems.book');
+    if (!orders || orders.length === 0) {
+        return NextResponse.json({ error: 'No orders found for this user' }, { status: 404 });
     }
-    return NextResponse.json(order);
+    return NextResponse.json(orders);
 }
 
 // Update order by ID
@@ -32,14 +43,3 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
     return NextResponse.json(updatedOrder);
 }
-
-// // Delete order by ID
-// export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-//     await dbConnect();
-//     const { id } = params;
-//     const deletedOrder = await Order.findByIdAndDelete(id);
-//     if (!deletedOrder) {
-//         return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-//     }
-//     return NextResponse.json({ message: 'Order deleted' });
-// }

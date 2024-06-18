@@ -63,11 +63,11 @@ const Navbar = () => {
                                 <li>
                                     <Button variant={'blue'} size={'sm'} onClick={logout}><LogOut /> Logout</Button>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <div className='p-1 border border-black dark:border-gray-500 rounded-sm shadow shadow-black dark:shadow-gray-700 dark:bg-blue-600 dark:hover:bg-blue-700 mb-1'>
                                         <Link href={'/account'}><User2Icon className='' /></Link>
                                     </div>
-                                </li>
+                                </li> */}
                             </>
                         )}
                         <li>
