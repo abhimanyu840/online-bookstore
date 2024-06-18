@@ -1,6 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,12 +14,12 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
+import { toast } from 'react-toastify';
 
-
-const EditBook = () => {
-    const { id } = useParams();
-    const { admin,token } = useAuth();
+const UploadBook = () => {
+    const { admin, token } = useAuth();
     const router = useRouter();
 
     const form = useForm<z.infer<typeof bookSchema>>({
@@ -34,41 +33,26 @@ const EditBook = () => {
         },
     });
 
-    useEffect(() => {
-        const fetchBook = async () => {
-            try {
-                const response = await fetch(`/api/books/${id}`);
-                if (!response.ok) throw new Error('Failed to fetch book');
-                const data = await response.json();
-                // Convert price to string for form input
-                form.reset({ ...data, price: data.price.toString() });
-            } catch (error) {
-                console.error('Error fetching book:', error);
-            }
-        };
-
-        fetchBook();
-    }, [id, form]);
-
     const onSubmit = async (values: z.infer<typeof bookSchema>) => {
-        const updatedValues = {
-            ...values,
-            price: parseFloat(values.price), // Ensure price is a number
-        };
+        // const updatedValues = {
+        //     ...values,
+        //     price: parseFloat(values.price), // Ensure price is a number
+        // };
 
         try {
-            const response = await fetch(`/api/books/${id}`, {
-                method: 'PUT',
+            const response = await fetch('/api/books', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     token: token,
                 },
-                body: JSON.stringify(updatedValues),
+                body: JSON.stringify(values),
             });
-            if (!response.ok) throw new Error('Failed to update book');
+            if (!response.ok) throw new Error('Failed to upload book');
             router.push('/admin');
         } catch (error) {
-            console.error('Error updating book:', error);
+            toast.error('Error uploading book');
+            console.error('Error uploading book:', error);
         }
     };
 
@@ -77,7 +61,7 @@ const EditBook = () => {
     return (
         <div className='container mt-4 '>
             <h1 className="mt-4 font-bold text-center underline text-4xl text-green-950 dark:text-green-500">
-                Edit Book
+                Upload Book
             </h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -146,11 +130,11 @@ const EditBook = () => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Edit</Button>
+                    <Button type="submit">Upload</Button>
                 </form>
             </Form>
         </div>
     );
 };
 
-export default EditBook;
+export default UploadBook;

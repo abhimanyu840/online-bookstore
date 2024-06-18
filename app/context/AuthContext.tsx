@@ -11,6 +11,7 @@ interface AuthContextProps {
     admin: boolean;
     login: (token: string) => void;
     logout: () => void;
+    token: string
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -19,10 +20,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useState<JwtPayload | null>(null);
     const [admin, setAdmin] = useState(false);
+    const [lToken, setLToken] = useState<string>('')
 
     useEffect(() => {
         const token = getCookie('token');
         if (token) {
+            setLToken(token as string)
             checkUser(token as string);
         }
     }, []);
@@ -51,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ loggedIn, user, admin, login, logout }}>
+        <AuthContext.Provider value={{ loggedIn, user, admin, login, logout, token: lToken }}>
             {children}
         </AuthContext.Provider>
     );
