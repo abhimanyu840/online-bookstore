@@ -10,8 +10,8 @@ interface OrderData {
 
 const OrderCard = (OrderData: OrderData) => {
     return (
-        <div className='h-32 w-10/12 bg-green-200 dark:bg-gray-800 shadow-md dark:shadow-gray-800 border rounded-md my-4 mx-auto p-4 border-green-800 dark:border-blue-800'>
-            <div className='flex justify-between items-center'>
+        <div className=' w-10/12 bg-green-200 dark:bg-gray-800 shadow-md dark:shadow-gray-800 border rounded-md my-4 mx-auto p-4 border-green-800 dark:border-blue-800'>
+            <div className='flex justify-between items-center p-4'>
                 <div className='flex items-center'>
                     <img src={OrderData.image} alt={OrderData.title} className='w-12 h-12 rounded' />
                     <div className='ml-4'>

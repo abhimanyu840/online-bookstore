@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { z } from "zod"
 import { loginSchema } from '@/zod/loginSchema';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,8 @@ import { useAuth } from '../context/AuthContext';
 const Login = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter();
-    const { login } = useAuth(); // Get the login method from the context
+    const { user, login } = useAuth(); // Get the login method from the context
+
 
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
@@ -32,6 +33,11 @@ const Login = () => {
             password: "",
         },
     })
+
+    useEffect(() => {
+        router.push('/')
+    }, [user])
+    
 
     async function onSubmit(values: z.infer<typeof loginSchema>) {
         setLoading(true)
@@ -55,7 +61,7 @@ const Login = () => {
     }
 
     return (
-        <div className='md:w-1/2 mx-auto py-5'>
+        <div className='md:w-1/2 mx-auto py-5 container'>
             <h1 className='text-2xl md:text-3xl font-bold mb-5 dark:text-white'>Login</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

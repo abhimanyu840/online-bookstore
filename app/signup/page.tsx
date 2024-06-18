@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { registerSchema } from '@/zod/registerSchema'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -24,7 +24,12 @@ import { useAuth } from '../context/AuthContext'
 const Signup = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter()
-    const { login } = useAuth(); // Get the login method from the context
+    const { user, login } = useAuth(); // Get the login method from the context
+
+    useEffect(() => {
+        router.push('/')
+    }, [user])
+
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof registerSchema>>({

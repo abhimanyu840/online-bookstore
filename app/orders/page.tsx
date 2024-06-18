@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import OrderCard from '@/components/OrderCard';
+import { toast } from 'react-toastify';
 
 const Orders = () => {
     const { user } = useAuth();
@@ -19,6 +20,7 @@ const Orders = () => {
                 const data = await response.json();
                 setOrders(data);
             } catch (error) {
+                toast.error('Error fetching orders')
                 console.error('Error fetching orders:', error);
             }
         };
