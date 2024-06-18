@@ -26,9 +26,9 @@ const Signup = () => {
     const router = useRouter()
     const { user, login } = useAuth(); // Get the login method from the context
 
-    useEffect(() => {
-        router.push('/')
-    }, [user])
+    // useEffect(() => {
+    //     router.push('/')
+    // }, [user])
 
 
     // 1. Define your form.

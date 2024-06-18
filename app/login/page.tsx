@@ -34,9 +34,9 @@ const Login = () => {
         },
     })
 
-    useEffect(() => {
-        router.push('/')
-    }, [user])
+    // useEffect(() => {
+    //     router.push('/')
+    // }, [user])
     
 
     async function onSubmit(values: z.infer<typeof loginSchema>) {
