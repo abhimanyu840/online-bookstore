@@ -37,10 +37,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
     await dbConnect();
     const token = request.headers.get('token');
+    // console.log(token, 'token'); // Log token for debugging
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const decodedToken = await decodeToken(token) as JwtPayload;
+    // console.log(decodedToken, 'decodedToken'); // Log decoded token for debugging
     if (!(decodedToken.role === 'admin')) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

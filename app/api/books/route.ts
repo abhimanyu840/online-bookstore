@@ -28,7 +28,6 @@ export async function POST(request: Request) {
   if (!res.success) {
     return NextResponse.json({ error: res.error.message });
   }
-  console.log(res.data,'data')
   const newBook = new Book({ ...res.data });
   await newBook.save();
   return NextResponse.json(newBook, { status: 201 });

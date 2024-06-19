@@ -18,7 +18,6 @@ const Admin = () => {
     const { admin, logout, token } = useAuth();
     const [books, setBooks] = useState<any[]>([]);
     const router = useRouter();
-
     useEffect(() => {
         const fetchBooks = async () => {
             try {
@@ -43,13 +42,17 @@ const Admin = () => {
             const response = await fetch(`/api/books/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    token: token,
+                    'Content-Type': 'application/json',
+                    token: token, // Ensure token is passed correctly
                 },
             });
-            if (!response.ok) throw new Error('Failed to delete book');
-            setBooks(books.filter(book => book.id !== id));
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to delete book');
+            }
+            setBooks(books.filter(book => book._id !== id));
         } catch (error) {
-            toast.error('Error deleting book')
+            toast.error('Error deleting book');
             console.error('Error deleting book:', error);
         }
     };
