@@ -5,18 +5,14 @@ import { toast } from 'react-toastify';
 
 const BookList = () => {
     const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchBookData = async () => {
         try {
-            setLoading(true);
             let data = await fetch('/api/books');
             let books = await data.json();
             setBooks(books);
-            setLoading(false);
         } catch (error) {
-            toast.error('Error Fetching Books')
-            setLoading(false);
+            toast.error('Error Fetching Books');
         }
     }
 
@@ -24,13 +20,13 @@ const BookList = () => {
         fetchBookData();
     }, []);
 
-    if (!loading && books.length === 0) {
+    if (books.length === 0) {
         return <div>No books available</div>;
     }
 
-    if (loading) {
-        return <div className='text-center mt-5'>Loading...</div>
-    }
+    // if (loading) {
+    //     return <div className='text-center mt-5'>Loading...</div>
+    // }
 
     return (
         <ul className='flex flex-wrap gap-8 items-center justify-center'>

@@ -1,9 +1,5 @@
-'use client';
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { useAppDispatch } from '@/lib/store/hooks';
-import { addItem } from '@/lib/store/features/cart/cartSlice';
+import AddToCartBtn from '@/components/AddToCartBtn';
 
 interface BookData {
     id: string;
@@ -14,25 +10,16 @@ interface BookData {
     author: string;
 }
 
-const BookDetails = ({ params }: { params: { id: string } }) => {
+const BookDetails = async ({ params }: { params: { id: string } }) => {
     const id = params.id;
-    const [book, setBook] = useState<any>(null);
-    const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        if (id) {
-            fetch(`/api/books/${id}`)
-                .then((res) => res.json())
-                .then((data) => setBook(data));
-        }
-    }, [id]);
-
-    const handleAddToCart = (book: BookData) => {
-        dispatch(addItem({ ...book, quantity: 1 }));
+    // Fetch the book data on the server side
+    const res = await fetch(`${process.env.PROD_SERVER}/api/books/${id}`);
+    if (!res.ok) {
+        // Handle error
+        return <div>Failed to load book</div>;
     }
-
-
-    if (!book) return <div>Loading...</div>;
+    const book: BookData = await res.json();
 
     return (
         <div className='container p-2'>
@@ -47,7 +34,14 @@ const BookDetails = ({ params }: { params: { id: string } }) => {
                             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 dark:border-gray-700 mb-5"></div>
                             <div className="flex">
                                 <span className="title-font font-medium text-2xl text-gray-900 dark:text-white">${book.price}</span>
-                                <Button variant={'blue'} onClick={() => handleAddToCart(book)}>Add To Cart</Button>
+                                <AddToCartBtn
+                                    id={book.id}
+                                    title={book.title}
+                                    description={book.description}
+                                    image={book.image}
+                                    price={book.price}
+                                    author={book.author}
+                                />
                             </div>
                         </div>
                     </div>

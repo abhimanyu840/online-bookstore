@@ -134,7 +134,7 @@ const Cart = ({ onClose }: CartProps) => {
                                         <h3 className="text-lg dark:text-white">{item.title}</h3>
                                         <p className="dark:text-gray-400">₹{item.price}</p>
                                         <div className="flex gap-4 mt-0 5 items-center">
-                                            <Button size="sm" variant="outline" color="primary" onClick={() => handleQuantityChange(item.id, item.quantity - 1)}>-</Button>
+                                            <Button size="sm" variant="outline" color="primary" onClick={() => { item.quantity > 0 && handleQuantityChange(item.id, item.quantity - 1) }}>-</Button>
                                             <span className="text-lg">{item.quantity}</span>
                                             <Button size="sm" variant="outline" color="primary" onClick={() => handleQuantityChange(item.id, item.quantity + 1)}>+</Button>
                                         </div>

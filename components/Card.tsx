@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { addItem } from '@/lib/store/features/cart/cartSlice';
+import AddToCartBtn from './AddToCartBtn';
 
 export interface CardData {
     id: string;
@@ -15,11 +16,11 @@ export interface CardData {
 }
 
 const Card = ({ id, title, description, image, price, author }: CardData) => {
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
 
-    const handleAddToCart = () => {
-        dispatch(addItem({ id, title, description, image, price, quantity: 1 }));
-    }
+    // const handleAddToCart = () => {
+    //     dispatch(addItem({ id, title, description, image, price, quantity: 1 }));
+    // }
 
     return (
         <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mt-6 px-10 py-6">
@@ -44,7 +45,8 @@ const Card = ({ id, title, description, image, price, author }: CardData) => {
                 </div>
                 <div className="flex justify-between">
                     <Button variant={'blue'}><Link href={`/books/${id}`}>View Details</Link></Button>
-                    <Button variant={'blue'} onClick={handleAddToCart}>Add To Cart</Button>
+                    {/* <Button variant={'blue'} onClick={handleAddToCart}>Add To Cart</Button> */}
+                    <AddToCartBtn id={id} author={author} description={description} image={image} price={price} title={title} key={id} />
                 </div>
             </div>
         </div>
