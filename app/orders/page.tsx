@@ -55,7 +55,7 @@ const Orders = () => {
                 {orders.map(order => (
                     <OrderCard
                         key={order._id}
-                        author={order.user.name}
+                        author={order.orderItems[0]?.book.author}
                         image={order.orderItems[0]?.book.image}
                         price={order.totalPrice}
                         quantity={order.orderItems.length}
