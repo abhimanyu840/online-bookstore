@@ -10,31 +10,31 @@ const OrdersList = () => {
     const { user } = useAuth();
     const [orders, setOrders] = useState<any[]>([]);
 
-    const fetchOrders = async () => {
-        if (!user) return;
 
-        try {
-            const response = await fetch(`/api/orders/${user.id}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch orders');
-            }
-            const data = await response.json();
-            setOrders(data);
-        } catch (error) {
-            toast.error('Error fetching orders');
-            console.error('Error fetching orders:', error);
-        }
-    };
 
     useEffect(() => {
+
+        const fetchOrders = async () => {
+            if (!user) return;
+
+            try {
+                const response = await fetch(`/api/orders/${user.id}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch orders');
+                }
+                const data = await response.json();
+                setOrders(data);
+            } catch (error) {
+                toast.error('Error fetching orders');
+                console.error('Error fetching orders:', error);
+            }
+        };
+
         fetchOrders();
-    }, [user?.id]);
+    }, [user!.id]);
 
     if (orders.length === 0) {
-        return <div className='container'>
-            <h1 className="mt-4 font-bold text-center underline text-4xl text-green-950 dark:text-green-500">
-                Orders
-            </h1><div className='text-center mt-4'>No Orders</div></div>
+        return <div className='text-center mt-4'>No Orders</div>
     }
 
     return (
