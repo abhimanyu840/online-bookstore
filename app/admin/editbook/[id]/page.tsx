@@ -16,11 +16,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from '@/app/context/AuthContext';
+import { toast } from 'react-toastify';
 
 
 const EditBook = () => {
     const { id } = useParams();
-    const { admin,token } = useAuth();
+    const { admin, token } = useAuth();
     const router = useRouter();
 
     const form = useForm<z.infer<typeof bookSchema>>({
@@ -57,18 +58,19 @@ const EditBook = () => {
         };
 
         try {
-            const response = await fetch(`/api/books/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    token: token,
-                },
-                body: JSON.stringify(updatedValues),
-            });
-            if (!response.ok) throw new Error('Failed to update book');
-            router.push('/admin');
+                const response = await fetch(`/api/books/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        token: token,
+                    },
+                    body: JSON.stringify(updatedValues),
+                });
+                if (!response.ok) throw new Error('Failed to update book');
+                router.push('/admin');
         } catch (error) {
             console.error('Error updating book:', error);
+            toast.error('Error updating book')
         }
     };
 

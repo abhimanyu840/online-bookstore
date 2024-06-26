@@ -25,10 +25,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const token = getCookie('token');
         if (token) {
-            setLToken(token as string)
             checkUser(token as string);
         }
     }, []);
+
+    useEffect(() => {
+        const token = getCookie('token');
+        if (token) {
+            setLToken(token as string);
+        }
+    }, [loggedIn])
+
 
     const checkUser = async (token: string) => {
         const data = await getUserData(token);

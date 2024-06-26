@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../utils/db';
 import Order from '../../../../models/Order';
 import { OrderSchema } from '@/zod/orderSchema';
+import { model } from 'mongoose';
+import Book from '@/models/Book';
 
 // // Get order by ID
 // export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
@@ -18,7 +20,7 @@ import { OrderSchema } from '@/zod/orderSchema';
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     await dbConnect();
     const { id } = params;
-    const orders = await Order.find({ user: id }).populate('user', 'name email').populate('orderItems.book');
+    const orders = await Order.find({ user: id }).populate('user', 'name email').populate({ path: 'orderItems.book', model: Book });
     if (!orders || orders.length === 0) {
         return NextResponse.json({ error: 'No orders found for this user' }, { status: 404 });
     }

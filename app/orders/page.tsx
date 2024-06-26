@@ -9,26 +9,26 @@ const Orders = () => {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            if (!user) return;
+    const fetchOrders = async () => {
+        if (!user) return;
 
-            try {
-                setLoading(true);
-                const response = await fetch(`/api/orders/${user.id}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch orders');
-                }
-                const data = await response.json();
-                setOrders(data);
-                setLoading(false)
-            } catch (error) {
-                toast.error('Error fetching orders')
-                setLoading(false)
-                console.error('Error fetching orders:', error);
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/orders/${user.id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders');
             }
-        };
+            const data = await response.json();
+            setOrders(data);
+            setLoading(false)
+        } catch (error) {
+            toast.error('Error fetching orders')
+            setLoading(false)
+            console.error('Error fetching orders:', error);
+        }
+    };
 
+    useEffect(() => {
         fetchOrders();
     }, [user]);
 
