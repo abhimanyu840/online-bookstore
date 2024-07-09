@@ -4,6 +4,7 @@ import dbConnect from '../../../utils/db';
 import Book from '@/models/Book';
 import { bookSchema } from '@/zod/bookSchema';
 import { decodeToken } from '@/utils/auth';
+import { revalidateTag } from 'next/cache';
 
 export async function GET() {
   await dbConnect();
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
   }
   const newBook = new Book({ ...res.data });
   await newBook.save();
+  revalidateTag('newBookCache');
   return NextResponse.json(newBook, { status: 201 });
 }
 

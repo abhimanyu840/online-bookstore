@@ -4,6 +4,7 @@ import dbConnect from '@/utils/db';
 import Book from '@/models/Book';
 import { decodeToken } from '@/utils/auth';
 import { JwtPayload } from 'jsonwebtoken';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     await dbConnect();
@@ -28,6 +29,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const { id } = params;
     const { title, author, price, description, image } = await request.json();
     const updatedBook = await Book.findByIdAndUpdate(id, { title, author, price, description, image }, { new: true });
+    revalidateTag('newBookCache');
     if (!updatedBook) {
         return NextResponse.json({ error: 'Book not found' }, { status: 404 });
     }
@@ -51,5 +53,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     if (!deletedBook) {
         return NextResponse.json({ error: 'Book not found' }, { status: 404 });
     }
+    revalidateTag('newBookCache');
     return NextResponse.json({ message: 'Book deleted' });
 }

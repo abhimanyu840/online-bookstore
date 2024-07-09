@@ -1,7 +1,7 @@
 import Card from "./Card";
 
 async function getData() {
-    const res = await fetch(`${process.env.PROD_SERVER}/api/books`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.PROD_SERVER}/api/books`, { next: { tags: ['newBookCache'] } });
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
 
