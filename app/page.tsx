@@ -26,7 +26,7 @@ export default function Home() {
         </div>
       </div>
       <hr />
-      <div className="hero mt-5  flex flex-col-reverse md:flex-row  justify-between ">
+      {/* <div className="hero mt-5  flex flex-col-reverse md:flex-row  justify-between ">
         <div className="right flex flex-col gap-4 justify-center">
           <h1 className="text-2xl md:text-4xl font-bold text-center mt-4">Special thanks to <span className="text-purple-400 font-extrabold underline">Rakesh Ranjan Sir</span></h1>
           <h2 className="text-1xl md:text-3xl font-bold text-center mt-4">
@@ -42,7 +42,7 @@ export default function Home() {
       <hr />
       <h2 className="text-1xl md:text-3xl font-bold text-center my-4 p-5">
         Design and Developed by Abhimanyu Kumar
-      </h2>
+      </h2> */}
     </main>
   );
 }
